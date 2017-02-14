@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour {
 
-    public float Speed = 40f;
+    public float Speed = 15f;
 
     private Transform target;
     private int waypointIndex = 0;
