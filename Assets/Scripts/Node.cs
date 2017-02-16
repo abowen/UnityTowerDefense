@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class Node : MonoBehaviour {
+public class Node : MonoBehaviour
+{
 
     public Color HoverColor;
     private Vector3 Offset = new Vector3(0, 0.5f, 0);
@@ -8,26 +10,50 @@ public class Node : MonoBehaviour {
     private Material material;
     private Color originalColor;
     private GameObject turret;
+    private BuildManager buildManager;
 
     private void Start()
     {
         material = GetComponent<Renderer>().material;
+        buildManager = BuildManager.Instance;
+        originalColor = material.color;
     }
 
     private void OnMouseDown()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+
+        var turretToBuild = buildManager.GetTurretToBuild();
+        if (turretToBuild == null)
+        {
+            Debug.Log("No turret to build");
+            return;
+        }
+
         if (turret != null)
         {
             Debug.Log("Already there");
             return;
         }
 
-        var turretToBuild = BuildManager.Instance.GetTurretToBuild();
         turret = Instantiate(turretToBuild, transform.position + Offset, transform.rotation);
     }
 
     private void OnMouseEnter()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+
+        var turretToBuild = buildManager.GetTurretToBuild();
+        if (turretToBuild == null)
+        {
+            return;
+        }
         originalColor = material.color;
         material.color = HoverColor;
     }
