@@ -1,8 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Shop : MonoBehaviour {
+
+    public TurretBlueprint StandardTurret;
+    public TurretBlueprint MissileLauncher;
 
     BuildManager buildManager;
 
@@ -11,15 +12,15 @@ public class Shop : MonoBehaviour {
         buildManager = BuildManager.Instance;
     }
 
-    public void PurchaseStandardTurret()
+    public void SelectStandardTurret()
     {
         Debug.Log("Standard Turret Purchased");
-        buildManager.SetTurretToBuild(buildManager.StandardTurretPrefab);
+        buildManager.SelectTurretToBuild(StandardTurret);
     }
 
-    public void PurchaseMissileLauncher()
+    public void SelectMissileLauncher()
     {
         Debug.Log("Missile Launcher Purchased");
-        buildManager.SetTurretToBuild(buildManager.MissileLauncherPrefab);
+        buildManager.SelectTurretToBuild(MissileLauncher);
     }
 }
