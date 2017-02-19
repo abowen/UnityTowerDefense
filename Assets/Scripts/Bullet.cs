@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 public class Bullet : MonoBehaviour {
 
@@ -6,6 +7,7 @@ public class Bullet : MonoBehaviour {
 
     public float Speed = 25f;
     public GameObject BulletImpact;
+    public float ExplosionRadius = 0f;
 
     public void Seek(Transform _target)
     {
@@ -30,13 +32,44 @@ public class Bullet : MonoBehaviour {
         }
 
         transform.Translate(direction.normalized * distanceThisFrame, Space.World);
+        transform.LookAt(target);
 	}
 
     void HitTarget()
     {
         var bulletImpact = Instantiate(BulletImpact, transform.position, transform.rotation);
-        Destroy(bulletImpact, 2f);
+        Destroy(bulletImpact, 5f);
+
+        if (ExplosionRadius > 0f)
+        {
+            Explode();
+        } else
+        {
+            Damage(target);
+        }
+
         Destroy(gameObject);
-        Destroy(target.gameObject);
+    }
+
+    void Explode()
+    {
+        var colliders = Physics.OverlapSphere(transform.position, ExplosionRadius);
+        var enemies = colliders.Where(c => c.tag == "Enemy");
+        foreach(var enemy in enemies)
+        {
+            Damage(enemy.transform);
+        }
+    }
+
+    void Damage(Transform enemy)
+    {
+        Destroy(enemy.gameObject);
+    }
+
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(transform.position, ExplosionRadius);
     }
 }
